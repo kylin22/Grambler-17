@@ -6,8 +6,19 @@
       title="Terminal"
       :activeBlock="activeBlock"
       @start-drag="handleStartDrag"
+      :z-indices="zIndexOrder"
     >
-      <p>/></p>
+      <Terminal/>
+    </DraggableBlock>
+    <DraggableBlock
+      id="resources"
+      class='block'
+      title="Resources"
+      :activeBlock="activeBlock"
+      @start-drag="handleStartDrag"
+      :z-indices="zIndexOrder"
+    >
+
     </DraggableBlock>
   </div>
 </template>
@@ -16,9 +27,11 @@
   import { ref } from "vue";
   import DraggableBlock from "./DraggableBlock.vue";
   import type { DragEmit } from "../types/worldTypes";
+  import Terminal from "./Terminal.vue";
 
   const activeBlock = ref<HTMLDivElement | null>(null);
   const mouseOffset = ref({ x: 0, y: 0 });
+  const zIndexOrder = ref<string[]>([]);
 
   const handleStartDrag = (dragged: DragEmit): void => {
     activeBlock.value = dragged.element;
@@ -26,6 +39,7 @@
       x: dragged.event.clientX - dragged.element.offsetLeft,
       y: dragged.event.clientY - dragged.element.offsetTop,
     };
+    ZIndexMoveTop(dragged.element.id);
   }
 
   const handleEndDrag = () => {
@@ -47,10 +61,24 @@
       activeBlock.value.style.top = `${newY}px`;
     }
   }
+  
+  const updateWorldBlocks = () => {
+    const draggableElements = document.querySelectorAll('.draggable-block');
+    return Array.from(draggableElements).map(element => element.id);
+  }
+
+  const ZIndexMoveTop = (id: string) => {
+    const index = zIndexOrder.value.findIndex(foundId => foundId === id);
+    if (index !== -1) {
+      zIndexOrder.value.splice(index, 1);
+      zIndexOrder.value.push(id);
+    }
+  }
 
   onMounted(() => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleEndDrag);
+    zIndexOrder.value = updateWorldBlocks();
   });
 
   onUnmounted(() => {
@@ -70,5 +98,9 @@
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  #terminal {
+    z-index: 0;
   }
 </style>

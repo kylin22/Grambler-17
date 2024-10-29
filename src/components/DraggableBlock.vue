@@ -2,6 +2,7 @@
   <div
     :id="blockId"
     :class="['draggable-block', blockClass, { dragged: isActive }]"
+    :style="{ zIndex: zOrder }"
   >
     <div class="window-header" @mousedown.stop.prevent="handleMouseDown">
       <span>{{ blockTitle }}</span>
@@ -23,6 +24,7 @@
     title: string;
     left?: number;
     top?: number;
+    zIndices?: string[];
   }>();
 
   const emit = defineEmits<{
@@ -39,6 +41,11 @@
     if (!draggedElement) return;
     emit("startDrag", { element: draggedElement, event: mouseEvent });
   }
+
+  const zOrder = computed(() => {
+    const index = props.zIndices?.findIndex(id => id === props.id)
+    return index ? index + 1 : 1;
+  });
 
   const showContent = ref(true);
 </script>
