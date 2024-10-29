@@ -1,11 +1,12 @@
 <template>
-  <div id="app-container" @mousedown="playSound('click');">
+  <div id="app-container" @mousedown="audioManager.playSound('click');">
     <World/>
   </div>
 </template>
 
 <script setup lang="ts">
   import World from './src/components/World.vue';
+import AudioManager from './src/utils/audioManager';
 
   useHead({
     title: 'Γramb',
@@ -14,25 +15,11 @@
     ]
   });
 
-  interface AudioLookup {
-    [key: string]: HTMLAudioElement
-  }
-  let soundEffects: AudioLookup = {};
+  const audioManager = new AudioManager()
 
   onMounted(() => {
-    soundEffects = {
-      "click": new Audio("/sfx/click.wav"),
-    }
-    soundEffects["click"].volume = 0.4;
+    audioManager.addAudio("click", "/sfx/click.wav"); 
   });
-
-  const playSound = (SFXKey: string) => {
-    const soundEffect = soundEffects[SFXKey];
-    if (soundEffect) {
-      soundEffect.currentTime = 0;
-      soundEffect.play();
-    }
-  }
 </script>
 
 <style lang="scss">
