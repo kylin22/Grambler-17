@@ -7,7 +7,6 @@ export default class AudioManager {
 
   public addAudio(name: string, path: string) {
     const audioElement = new Audio(path);
-    console.log(audioElement)
     this.audioElements[name] = audioElement;
   }
 

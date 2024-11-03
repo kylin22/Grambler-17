@@ -79,9 +79,8 @@
   }
 
   .window-content {
-    padding: 10px;
-    overflow-y: auto;
-    max-height: calc(var(--height, 200px) - 60px);
+    padding: 12px;
+    overflow-y: hidden;
   }
 
   .dragged {
