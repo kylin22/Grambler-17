@@ -33,4 +33,8 @@ import AudioManager from './src/utils/audioManager';
     min-height: 100% !important;
     height: 100%;
   }
+
+  .selectable {
+    cursor: url("./src/assets/cursors/curstext.png"), auto;
+  }
 </style>

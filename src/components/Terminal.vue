@@ -1,7 +1,14 @@
 <template>
-  <div id="terminal" v-html="terminalText"></div>
-  <span v-if="terminalSpinner">{{ terminalSpinner }}</span>
-  <span v-if="terminalSpinner">&nbsp {{ terminalPercentage }}%</span>
+  <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation in Vue! -->
+  <div id="terminal">
+    <div id="history" v-html="terminalText"></div>
+    <div>
+      <span v-if="terminalSpinner">{{ terminalSpinner }}</span>
+      <span v-if="terminalSpinner">&nbsp {{ terminalPercentage }}%</span>
+    </div>
+    <!-- zero-width space to fix cursor jumping -->
+    <div v-if="inputCollect" class="selectable" contenteditable id="collector" name="collector" autocomplete="off" @keydown.enter.prevent="handleInput" spellcheck="false">&#8203</div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -15,10 +22,32 @@
   const SPEECH_HEADER = "/SysGuide>";
   const OS_HEADER = "/> "
 
+  const username = ref("'kylin:/>\u0020'");
   const terminalText = ref("");
   const terminalSpinner = ref("");
   const terminalPercentage = ref(0);
   const spinnerFrames = ["|", "/", "-", "\\"];
+  const inputCollect = ref(false);
+  const currentTextBlock = ref<LoadSequence | Speech | null>(null);
+
+  const handleInput = () => {
+    const collector = document.getElementById('collector');
+    if (!collector) {
+      return;
+    }
+    let input = collector.innerHTML;
+    input.replace("&#8203", "");
+    console.log(input)
+    inputCollect.value = false;
+  }
+
+  const createInput = () => {
+    inputCollect.value = true;
+    const collector = document.getElementById('collector');
+    if (collector) {
+      collector.focus();
+    }
+  }
 
   const generateSpeech = (textBlock: Speech) => {
     let currentLine = 0;
@@ -47,6 +76,7 @@
 
   const generateLoadSequence = (textBlock: LoadSequence) => {
     let currentLine = 0;
+    currentTextBlock.value = textBlock;
 
     const loadPercentage = (time: number, stuck: boolean) => {
       const tickInterval = stuck ? time / (Math.random() * 100) : time / 100
@@ -73,8 +103,6 @@
 
     const generateLine = (line: LoadLine) => {
       setTimeout(() => {
-        terminalText.value += OS_HEADER;
-
         switch (line.loadType) {
           case LoadTypes.None: 
             audioManager.playSound("newLine");
@@ -91,9 +119,14 @@
             audioManager.playSound("warn");
             break;
         }       
-        terminalText.value += line.text;
+        terminalText.value += `${OS_HEADER}${line.text}<br>`;
         currentLine++;
-        terminalText.value += "<br>";
+        if (currentLine >= textBlock.content.length) {
+          if (textBlock.collect || textBlock.prompt) {
+            createInput();
+          }
+          return;
+        } 
         generateLine(textBlock.content[currentLine]);
       }, line.loadTime ? TEXT_SPEED + line.loadTime : TEXT_SPEED);
     }
@@ -111,7 +144,46 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "../assets/theme.scss";
+
   b {
     font-weight: 1000;
+  }
+
+  #terminal {
+    display: flex;
+    flex-direction: column;
+  }
+  #history {
+    flex-grow: 0;
+  }
+
+  #collector {
+    white-space: pre;
+    font-size: inherit;
+    color: inherit;
+    flex-grow: 1;
+    padding: 0;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    overflow: hidden;
+    resize: none;
+    text-wrap: wrap;
+    word-break: break-all;
+
+    &::selection {
+      color: $background-color;
+      background: $primary-color;
+    }
+
+    &::before {
+      content: v-bind("username");
+    }
+  }
+
+  #collector-label {
+    pointer-events: none;
+    user-select: none;
   }
 </style>

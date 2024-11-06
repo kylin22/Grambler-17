@@ -12,10 +12,17 @@ export enum LoadTypes {
     Error = "error"
 }
 
-export interface LoadSequence {
+interface TextBlock {
+    prompt?: {
+        [answer: string]: string;
+    }
+    collect?: boolean;
+}
+
+export interface LoadSequence extends TextBlock {
     content: LoadLine[]
 }
 
-export interface Speech {
+export interface Speech extends TextBlock {
     content: string[]
 }

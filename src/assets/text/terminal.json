@@ -10,15 +10,20 @@
             { "text": "Purging temporal distortion logs... ", "loadType": "spinner", "loadTime": 2000, "stuck": true },
             { "text": "<b>ERROR_CODE 478: Data Store Corrupted Beyond Recovery!</b><br><br> Failed to purge logs, significant data entropy detected at position 1729. Possible causes: long-term memory decay, or external tampering.<br>", "loadType": "error", "loadTime": 8000 },
             { "text": "<b>//WARN//</b> Unstable chronological data may impact system stability!", "loadTime": 5000, "loadType": "none"},
-            { "text": "<b>Skipping boot checks...</b>", "loadTime": 2000, "loadType": "none"}
-        ]
+            { "text": "<b>Skip boot checks? (y/n)</b>", "loadTime": 2000, "loadType": "none"}
+        ],
+        "prompt": {
+            "y": "introWelcome",
+            "n": "loadingSequence"
+        }
     },
     "introWelcome": {
         "contentType": "speech",
         "content": [
-            "Welcome to the space between what has and what will be.",
-            "Make yourself comfortable.",
-            "You'll be here for a while."
-        ]
+            "Time since last restart: NaN",
+            "Registering new system administrator.",
+            "<b>What is your name?<b>"
+        ],
+        "collect": true
     }
 }
