@@ -1,5 +1,5 @@
 <template>
-  <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation in Vue! -->
+  <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation in Nuxt! -->
   <div id="terminal">
     <div id="history" v-html="terminalText"></div>
     <div>
@@ -13,13 +13,13 @@
 
 <script lang="ts" setup>
   import textData from "../assets/text/terminal.json";
-  import { LoadTypes, type LoadLine, type LoadSequence, type Speech } from "../assets/text/terminalTypes";
+  import { LoadTypes, type LoadLine, type LoadSequence, type Speech, type TextData } from "../assets/text/terminalTypes";
   import AudioManager from "../utils/audioManager";
 
   const TEXT_SPEED = 75;
   const LINE_PAUSE = 1000;
   const LOAD_SPINNER_FRAME = 100;
-  const SPEECH_HEADER = "/SysGuide>";
+  const SPEECH_HEADER = "sysguide:/> ";
   const OS_HEADER = "/> "
 
   const username = ref("'kylin:/>\u0020'");
@@ -36,9 +36,26 @@
       return;
     }
     let input = collector.innerHTML;
-    input.replace("&#8203", "");
-    console.log(input)
+    input = input.replace(/[\u200B-\u200D\uFEFF]/g, ''); //remove zero-width space
+    if (currentTextBlock.value?.prompt) {
+      const answers = currentTextBlock.value.prompt;
+      const result = answers[input];
+      if (result) {
+        switch ((textData as TextData)[result].contentType) {
+          case "speech":
+
+            break;
+          case "loadingSequence":
+            generateLoadSequence((textData as TextData)[result] as LoadSequence);
+            break;
+        }
+      } else {
+        collector.innerHTML = "&#8203";
+        return;
+      }
+    }
     inputCollect.value = false;
+    currentTextBlock.value = null;
   }
 
   const createInput = () => {

@@ -14,7 +14,7 @@
         ],
         "prompt": {
             "y": "introWelcome",
-            "n": "loadingSequence"
+            "n": "introLoad"
         }
     },
     "introWelcome": {

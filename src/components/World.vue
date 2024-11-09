@@ -29,11 +29,13 @@
   import type { DragEmit } from "../types/worldTypes";
   import Terminal from "./Terminal.vue";
 
+  const draggedBlock = ref<HTMLDivElement | null>(null);
   const activeBlock = ref<HTMLDivElement | null>(null);
   const mouseOffset = ref({ x: 0, y: 0 });
   const zIndexOrder = ref<string[]>([]);
 
   const handleStartDrag = (dragged: DragEmit): void => {
+    draggedBlock.value = dragged.element;
     activeBlock.value = dragged.element;
     mouseOffset.value = {
       x: dragged.event.clientX - dragged.element.offsetLeft,
@@ -43,22 +45,22 @@
   }
 
   const handleEndDrag = () => {
-    activeBlock.value = null;
+    draggedBlock.value = null;
   }
 
   const handleMouseMove = (event: MouseEvent): void => {
-    if (activeBlock.value) {
+    if (draggedBlock.value) {
       let newX = event.clientX - mouseOffset.value.x;
       let newY = event.clientY - mouseOffset.value.y;
 
-      const maxLeft = (document.getElementById('world-container')?.clientWidth || 0) - activeBlock.value.offsetWidth;
-      const maxTop = (document.getElementById('world-container')?.clientHeight || 0) - activeBlock.value.offsetHeight;
+      const maxLeft = (document.getElementById('world-container')?.clientWidth || 0) - draggedBlock.value.offsetWidth;
+      const maxTop = (document.getElementById('world-container')?.clientHeight || 0) - draggedBlock.value.offsetHeight;
       
       newX = Math.max(0, Math.min(maxLeft, newX));
       newY = Math.max(0, Math.min(maxTop, newY));
 
-      activeBlock.value.style.left = `${newX}px`;
-      activeBlock.value.style.top = `${newY}px`;
+      draggedBlock.value.style.left = `${newX}px`;
+      draggedBlock.value.style.top = `${newY}px`;
     }
   }
   

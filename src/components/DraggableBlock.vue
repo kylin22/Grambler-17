@@ -1,13 +1,13 @@
 <template>
   <div
     :id="blockId"
-    :class="['draggable-block', blockClass, { dragged: isActive }]"
+    :class="['draggable-block', blockClass, { selected: isActive }]"
     :style="{ zIndex: zOrder }"
   >
     <div class="window-header" @mousedown.stop.prevent="handleMouseDown">
       <span>{{ blockTitle }}</span>
     </div>
-    <div class="window-content" v-if="showContent">
+    <div :class="['window-content', { uninteractable: !isActive }]" v-if="showContent">
       <slot></slot>
     </div>
   </div>
@@ -83,7 +83,11 @@
     overflow-y: hidden;
   }
 
-  .dragged {
+  .selected {
     outline: solid $primary-color;
+  }
+
+  .uninteractable {
+    pointer-events: none;
   }
 </style>

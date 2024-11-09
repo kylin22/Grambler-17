@@ -13,9 +13,10 @@ export enum LoadTypes {
 }
 
 interface TextBlock {
+    contentType: string;
     prompt?: {
         [answer: string]: string;
-    }
+    };
     collect?: boolean;
 }
 
@@ -25,4 +26,8 @@ export interface LoadSequence extends TextBlock {
 
 export interface Speech extends TextBlock {
     content: string[]
+}
+
+export interface TextData {
+    [id: string]: LoadSequence | Speech
 }
