@@ -3,11 +3,11 @@
         "contentType": "loadingSequence",
         "content": [
             { "text": "<b>//EXECUTING SYSTEM RESTART//</b>", "loadType": "none"},
-            { "text": "Rebooting memory arrays...", "loadType": "spinner", "loadTime": 2000 },
-            { "text": "Verifying neural interface channels... ", "loadType": "spinner", "loadTime": 4000},
-            { "text": "Recalibrating environmental sensors... ", "loadType": "spinner", "loadTime": 3000},
-            { "text": "Loading archived process states... ", "loadType": "spinner", "loadTime": 3000},
-            { "text": "Purging temporal distortion logs... ", "loadType": "spinner", "loadTime": 2000, "stuck": true },
+            { "text": "Rebooting memory arrays...", "loadType": "spinner", "loadTime": 3000 },
+            { "text": "Verifying neural interface channels... ", "loadType": "spinner", "loadTime": 5500},
+            { "text": "Recalibrating environmental sensors... ", "loadType": "spinner", "loadTime": 4000},
+            { "text": "Loading archived process states... ", "loadType": "spinner", "loadTime": 5000},
+            { "text": "Purging temporal distortion logs... ", "loadType": "spinner", "loadTime": 3000, "stuck": true },
             { "text": "<b>ERROR_CODE 478: Data Store Corrupted Beyond Recovery!</b><br><br> Failed to purge logs, significant data entropy detected at position 1729. Possible causes: long-term memory decay, or external tampering.<br>", "loadType": "error", "loadTime": 8000 },
             { "text": "<b>//WARN//</b> Unstable chronological data may impact system stability!", "loadTime": 5000, "loadType": "none"},
             { "text": "<b>Skip boot checks? (y/n)</b>", "loadTime": 2000, "loadType": "none"}
@@ -20,9 +20,12 @@
     "introWelcome": {
         "contentType": "speech",
         "content": [
+            "Boot skipped?: true",
             "Time since last restart: NaN",
-            "Registering new system administrator.",
-            "<b>What is your name?<b>"
+            "Welcome to the SERRATOR research and exploration protocol.",
+            "I am your guide to this unit.",
+            "Registering new system administrator:",
+            "What is your name?"
         ],
         "collect": true
     }

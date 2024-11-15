@@ -7,7 +7,7 @@
     <div class="window-header" @mousedown.stop.prevent="handleMouseDown">
       <span>{{ blockTitle }}</span>
     </div>
-    <div :class="['window-content', { uninteractable: !isActive }]" v-if="showContent">
+    <div id="content" :class="['window-content', { uninteractable: !isActive }]" v-if="showContent">
       <slot></slot>
     </div>
   </div>
@@ -60,17 +60,19 @@
     border-radius: 10px;
     color: $primary-color;
     box-sizing: border-box;
-    overflow: hidden;
     width: var(--width, 600px);
     height: var(--height, 500px);
     -webkit-user-select: none; 
     -ms-user-select: none; 
     user-select: none;
+    display: flex;
+    flex-direction: column;
   }
 
   .window-header {
+    z-index: 0;
     padding: 5px;
-    background-color: $background-color;
+    background-color: transparent;
     border-bottom: 2px solid $primary-color;
   }
 
@@ -79,8 +81,10 @@
   }
 
   .window-content {
-    padding: 12px;
-    overflow-y: hidden;
+    display: flex;
+    overflow: hidden;
+    z-index: 1;
+    padding: 8px;
   }
 
   .selected {
