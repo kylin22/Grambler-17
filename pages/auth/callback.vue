@@ -1,12 +1,15 @@
+<template>
+  <div id="popup">
+    <h1>Redirecting you back...</h1>
+    <p><NuxtLink to="/" class="link">If there's an issue click here to reload.</NuxtLink></p>
+  </div>
+</template>
+
 <script setup lang="ts">
 
 console.log("callback");
 console.log(useAuth().user)
 </script>
-
-<template>
-
-</template>
 
 <style lang="scss">
   @import "~/src/assets/theme.scss";
@@ -18,9 +21,34 @@ console.log(useAuth().user)
     background-color: $background-color;
     min-height: 100% !important;
     height: 100%;
+    caret-color: transparent;
   }
 
-  .selectable {
-    cursor: url("~/src/assets/cursors/curstext.png"), auto;
+  #__nuxt {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  h1 {
+    font-weight: normal;
+  }
+
+  p {
+    font-size: 0.5em;
+  }
+
+  #popup {
+    text-align: center;
+    font-size: 2em;
+    color: $primary-color;
+  }
+
+  .link {
+    all: unset;
+  }
+
+  .link:hover {
+    text-decoration: underline;
   }
 </style>

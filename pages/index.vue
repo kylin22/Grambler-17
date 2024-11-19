@@ -33,7 +33,7 @@
   const discordUser = useAuth().user;
 
   if (!discordUser) {
-    console.error("Error fetching discord authentication data.")
+    console.error("Error fetching discord authentication data.") //TODO handle failed authentication.
   } else {
     const discordId = discordUser.id as string;
     await loadAll(discordId);
