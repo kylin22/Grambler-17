@@ -17,7 +17,7 @@
   import textData from "../assets/text/terminal.json";
   import { LoadTypes, type CollectOptions, type LoadLine, type LoadSequence, type Speech, type TextData } from "../assets/text/terminalTypes";
   import AudioManager from "../utils/audioManager";
-  import TerminalEventHandler from "../utils/terminalEventHandler";
+  import TerminalEventHandler from "../utils/eventHandler";
 
   const TEXT_SPEED = 75;
   const LINE_PAUSE = 1500;
