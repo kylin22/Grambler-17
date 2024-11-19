@@ -11,7 +11,7 @@ console.log("callback");
 console.log(useAuth().user)
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import "~/src/assets/theme.scss";
 
   html, body, #__nuxt, #__layout, #app-container {

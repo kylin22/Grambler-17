@@ -17,7 +17,7 @@ interface TextBlock {
     prompt?: {
         [answer: string]: string;
     };
-    collect?: boolean;
+    collect?: string;
 }
 
 export interface LoadSequence extends TextBlock {
@@ -31,3 +31,5 @@ export interface Speech extends TextBlock {
 export interface TextData {
     [id: string]: LoadSequence | Speech
 }
+
+export type CollectOptions = "displayName";

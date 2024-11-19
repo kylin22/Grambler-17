@@ -26,6 +26,6 @@
             "Registering new system administrator:",
             "What is your name?"
         ],
-        "collect": true
+        "collect": "displayName"
     }
 }

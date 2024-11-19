@@ -38,7 +38,6 @@
     const discordId = discordUser.id as string;
     await loadAll(discordId);
     const playerInfoStore = usePlayerInfoStore();
-    console.log(`${playerInfoStore.userId}${playerInfoStore.displayName}`);
   }
 </script>
 
@@ -52,6 +51,7 @@
     background-color: $background-color;
     min-height: 100% !important;
     height: 100%;
+    caret-color: transparent;
   }
 
   .selectable {

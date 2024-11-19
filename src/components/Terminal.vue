@@ -1,7 +1,6 @@
 <template>
   <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation in Nuxt! -->
   <div id="terminal" @scroll="handleManualScroll">
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <div id="history" v-html="terminalText"></div>
     <div>
       <span v-if="terminalSpinner">{{ terminalSpinner }}</span>
@@ -16,8 +15,9 @@
 
 <script lang="ts" setup>
   import textData from "../assets/text/terminal.json";
-  import { LoadTypes, type LoadLine, type LoadSequence, type Speech, type TextData } from "../assets/text/terminalTypes";
+  import { LoadTypes, type CollectOptions, type LoadLine, type LoadSequence, type Speech, type TextData } from "../assets/text/terminalTypes";
   import AudioManager from "../utils/audioManager";
+  import TerminalEventHandler from "../utils/terminalEventHandler";
 
   const TEXT_SPEED = 75;
   const LINE_PAUSE = 1500;
@@ -33,6 +33,7 @@
   const inputCollect = ref(false);
   const scrolled = ref(false);
   const currentTextBlock = ref<LoadSequence | Speech | null>(null);
+  const eventHandler = new TerminalEventHandler();
 
   const handleManualScroll = () => {
     const terminal = document.getElementById("terminal");
@@ -55,7 +56,7 @@
     scrollToBottom();
   });
 
-  const handleInput = () => {
+  const handleInput = async() => {
     const collector = document.getElementById('collector');
     if (!collector) {
       return;
@@ -81,6 +82,13 @@
         collector.innerHTML = "&#8203";
         return;
       }
+    } else if (currentTextBlock.value?.collect) {
+      const error = await eventHandler.parseInput(currentTextBlock.value.collect as CollectOptions, input);
+      if (error) {
+        terminalText.value += `${OS_HEADER}Error: ${error.invalid}<br>`;
+        collector.innerHTML = "&#8203";
+        return;
+      }
     }
     inputCollect.value = false;
   }
@@ -96,7 +104,6 @@
   const generateSpeech = (textBlock: Speech) => {
     let currentLine = 0;
     currentTextBlock.value = textBlock;
-    
     const generateLine = (line: string) => {
       setTimeout(() => {
         let currentCharacter = 0;
@@ -119,6 +126,7 @@
           if (textBlock.collect || textBlock.prompt) {
             setTimeout(createInput, line.length * TEXT_SPEED);
           }
+          terminalText.value += "<br>";
           return;
         } 
       }, LINE_PAUSE);

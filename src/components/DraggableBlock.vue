@@ -67,6 +67,7 @@
     user-select: none;
     display: flex;
     flex-direction: column;
+    caret-color: auto;
   }
 
   .window-header {
