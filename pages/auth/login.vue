@@ -6,7 +6,9 @@
 </template>
 
 <script setup lang="ts">
-  console.log(await useAuth().loginWith("discord"));
+  onMounted(() => {
+    console.log(await useAuth().loginWith("discord"));
+  }),
 </script>
 
 <style lang="scss" scoped>
