@@ -20,9 +20,9 @@
     ]
   });
   const { user } = useAuth();
-  if (!user) {
-    navigateTo("/auth/login");
-  }
+  // if (!user) {
+  //   navigateTo("/auth/login");
+  // }
 
   const audioManager = new AudioManager()
 
