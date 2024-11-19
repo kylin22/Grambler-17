@@ -34,5 +34,8 @@ export default defineNuxtConfig({
   },
   router: {
     middleware: ["auth"]
+  },
+  nitro: {
+    preset: "vercel",
   }
 })
