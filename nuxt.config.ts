@@ -36,6 +36,6 @@ export default defineNuxtConfig({
     middleware: ["auth"]
   },
   nitro: {
-    preset: "vercel",
+    preset: "vercel-edge",
   }
 })
