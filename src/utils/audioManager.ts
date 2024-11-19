@@ -3,6 +3,7 @@ interface AudioLookup {
 }
 
 export default class AudioManager {
+ 
   private audioElements: AudioLookup = {};
 
   public addAudio(name: string, path: string) {
