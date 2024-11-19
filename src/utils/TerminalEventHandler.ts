@@ -18,7 +18,7 @@ export default class TerminalEventHandler {
           return { invalid: "Your name cannot be longer than 12 characters." };
         }
         playerInfoStore.displayName = input;
-        await saveAll()
+        await saveAll();
         break;
       default:
         console.error(`Terminal collection does not recognise CollectOption. Check terminal.json or add it to terminalTypes.ts (CollectOptions)`);

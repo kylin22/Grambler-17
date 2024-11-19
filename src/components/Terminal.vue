@@ -52,7 +52,7 @@
     }
   }
 
-  onUpdated(() => { //TODO find a better way to handle auto-scrolling
+  onUpdated(() => {
     scrollToBottom();
   });
 

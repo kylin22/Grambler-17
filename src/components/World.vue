@@ -18,7 +18,6 @@
       @start-drag="handleStartDrag"
       :z-indices="zIndexOrder"
     >
-
     </DraggableBlock>
   </div>
 </template>
