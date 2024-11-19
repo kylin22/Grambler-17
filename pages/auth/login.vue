@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-  console.log(useAuth().loginWith("discord"));
+  console.log(await useAuth().loginWith("discord"));
 </script>
 
 <style lang="scss" scoped>

@@ -8,7 +8,7 @@
 <script setup lang="ts">
 
 console.log("callback");
-console.log(useAuth().user)
+console.log(await useAuth().user)
 </script>
 
 <style lang="scss" scoped>
