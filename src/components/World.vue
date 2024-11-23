@@ -1,5 +1,5 @@
 <template>
-  <div id="world-container" class="vignette">
+  <div id="world-container" class="vignette" :class="{ 'move-cursor': moveCursor }" @mousedown="addMoveCursor" @mouseup="removeMoveCursor">
     <DraggableBlock
       id="terminal"
       class='block'
@@ -23,6 +23,17 @@
   const activeBlock = ref<HTMLDivElement | null>(null);
   const mouseOffset = ref({ x: 0, y: 0 });
   const zIndexOrder = ref<string[]>([]);
+  const moveCursor = ref(false);
+
+  const addMoveCursor = (event: MouseEvent) => {
+    if (event.button === 2) {
+      moveCursor.value = true;
+    }
+  }
+
+  const removeMoveCursor = (event: MouseEvent) => {
+    moveCursor.value = false;
+  }
 
   const handleStartDrag = (dragged: DragEmit): void => {
     draggedBlock.value = dragged.element;
@@ -85,6 +96,10 @@
 
 <style lang="scss" scoped>
   @import "../assets/theme.scss";
+
+  .move-cursor {
+    cursor: url("~/src/assets/cursors/move.png"), auto;
+  }
 
   .block {
     background-color: $background-color;
