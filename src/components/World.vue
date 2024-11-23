@@ -1,5 +1,5 @@
 <template>
-  <div id="world-container">
+  <div id="world-container" class="vignette">
     <DraggableBlock
       id="terminal"
       class='block'
@@ -94,5 +94,13 @@
     display: block;
     width: 200%;
     height: 200%;
+  }
+
+  .vignette {
+    z-index: 5;
+    background: radial-gradient(circle, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 100%);
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 </style>
