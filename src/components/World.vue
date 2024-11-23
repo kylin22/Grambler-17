@@ -10,15 +10,6 @@
     >
       <Terminal/>
     </DraggableBlock>
-    <DraggableBlock
-      id="resources"
-      class='block'
-      title="Resources"
-      :activeBlock="activeBlock"
-      @start-drag="handleStartDrag"
-      :z-indices="zIndexOrder"
-    >
-    </DraggableBlock>
   </div>
 </template>
 
@@ -80,6 +71,10 @@
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleEndDrag);
     zIndexOrder.value = updateWorldBlocks();
+
+    document.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    }, false);
   });
 
   onUnmounted(() => {
@@ -97,11 +92,7 @@
 
   #world-container {
     display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  #terminal {
-    z-index: 0;
+    width: 200%;
+    height: 200%;
   }
 </style>

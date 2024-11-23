@@ -68,6 +68,9 @@
     display: flex;
     flex-direction: column;
     caret-color: auto;
+    position: absolute;
+    top: calc(50% - (var(--height, 500px) / 2));
+    left: calc(50% - (var(--width, 600px) / 2));
   }
 
   .window-header {

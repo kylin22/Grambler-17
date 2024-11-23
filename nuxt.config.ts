@@ -9,10 +9,10 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt-alt/auth",
     "@nuxt-alt/http",
-    "@pinia/nuxt"
+    "@pinia/nuxt",
   ],
   build: {
-    transpile: ['pinia-plugin-persistedstate'],
+    transpile: ['pinia-plugin-persistedstate', "three"],
   },
   auth: {
     redirect: {

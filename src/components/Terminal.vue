@@ -48,12 +48,12 @@
   const scrollToBottom = () => {
     const anchor = document.getElementById("anchor");
     if (anchor && !scrolled.value) {
-      anchor.scrollIntoView();
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
   }
-
+  
   onUpdated(() => {
-    scrollToBottom();
+    // scrollToBottom(); //TODO fix this shi
   });
 
   const handleInput = async() => {
@@ -204,7 +204,6 @@
     audioManager.addAudio("newLine", "/sfx/message-alert-normal.wav");
     audioManager.addAudio("warn", "/sfx/message-alert-warn.wav");
     generateLoadSequence(textData.introLoad as LoadSequence);
-    // generateSpeech(textData.introWelcome as Speech);
   });
 </script>
 

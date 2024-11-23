@@ -5,18 +5,18 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted } from 'vue';
-  import World from '~/src/components/World.vue';
-  import AudioManager from '~/src/utils/audioManager';
-  import { useHead } from 'nuxt/app';
-  import type { GameState } from '~/server/models/playerStats.model';
-  import { usePlayerInfoStore } from '~/src/store/playerInfo';
-  import loadAll from '~/src/utils/loadAll';
+  import { onMounted } from "vue";
+  import World from "~/src/components/World.vue";
+  import AudioManager from "~/src/utils/audioManager";
+  import { useHead } from "nuxt/app";
+  import { usePlayerInfoStore } from "~/src/store/playerInfo";
+  import loadAll from "~/src/utils/loadAll";
+  import { useDragScroll } from "~/src/composables/dragScroll";
 
   useHead({
-    title: 'Γramb',
+    title: "Γramb",
     meta: [
-      { name: 'description', content: 'holophonon' }
+      { name: "description", content: "holophonon" }
     ]
   });
   const { user } = useAuth();
@@ -28,6 +28,10 @@
 
   onMounted(() => {
     audioManager.addAudio("click", "/sfx/click.wav"); 
+    const container = document.getElementById("app-container");
+    if (container) {
+      useDragScroll(container);
+    }
   });
 
   const discordUser = useAuth().user;
@@ -46,12 +50,19 @@
 
   html, body, #__nuxt, #__layout, #app-container {
     cursor: url("~/src/assets/cursors/curs.png"), auto;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     margin: 0px;
     background-color: $background-color;
     min-height: 100% !important;
     height: 100%;
+    user-select: none;
     caret-color: transparent;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .selectable {
