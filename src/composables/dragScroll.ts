@@ -1,47 +1,60 @@
 import { ref, onUnmounted } from "vue";
 import { Vector2 } from "three";
-
+import { clamp } from "three/src/math/MathUtils.js";
+ 
 export const useDragScroll = (element: HTMLElement) => {
-  const scrollRef = ref(element);
   const isDragging = ref(false);
   const isMomentum = ref(false);
   const MIN_SPEED = 0;
-  const MAX_SPEED = 2;
-  const FRICTION = 0.90;
-  const MOMENTUM_REMOVE_RANGE = 0.001;
+  const MAX_SPEED = 3;
+  const FRICTION = 0.9;
+  const MOMENTUM_REMOVE_RANGE = 0.01;
   const MOMENTUM_TIMESTEP = 16;
   const MOMENTUM_APPLY_MARGIN = 50;
-  let startPosition = new Vector2(0, 0);
   let lastPosition = new Vector2(0, 0);
+  let newPosition = shallowRef(new Vector2(0, 0));
   let velocity = new Vector2(0, 0);
   let lastTime = 0;
   let momentumInterval: NodeJS.Timeout | null = null;
   let momentumBuffer: NodeJS.Timeout | null = null;
+  const elementDimensions = new Vector2(element.offsetWidth / 2, element.offsetHeight / 2);
+  
+  const updatePosition = (incrementX: number, incrementY: number) => {
+    newPosition.value.x += incrementX;
+    newPosition.value.y += incrementY;
+    newPosition.value.x = clamp(newPosition.value.x, -elementDimensions.x / 2, elementDimensions.x / 2);
+    newPosition.value.y = clamp(newPosition.value.y, -elementDimensions.y / 2, elementDimensions.y / 2);
+    element.style.transform = `translate(${-newPosition.value.x}px, ${-newPosition.value.y}px)`;
+  };
 
-  const startDrag = (event: MouseEvent) => {
+  const getPosition = (event: MouseEvent | TouchEvent) => {
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+    return new Vector2(clientX, clientY);
+  }
+
+  const startDrag = (event: MouseEvent | TouchEvent) => {
     isMomentum.value = false;
-    if (event.button !== 2) return;
     isDragging.value = true;
-    startPosition = new Vector2(event.clientX, event.clientY);
-    lastPosition = new Vector2(event.clientX, event.clientY);
+    lastPosition = getPosition(event);
     velocity = new Vector2(0, 0);
     lastTime = event.timeStamp;
     
     document.addEventListener("mousemove", moveDrag);
     document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchmove", moveDrag);
+    document.addEventListener("touchend", endDrag);
   }
 
-  const moveDrag = (event: MouseEvent) => {
+  const moveDrag = (event: MouseEvent | TouchEvent) => {
     if (!isDragging.value) return;
     
-    const currentPosition = new Vector2(event.clientX, event.clientY);
+    const currentPosition = getPosition(event);
 
     const difference = new Vector2().copy(lastPosition).sub(currentPosition);
     const dt = event.timeStamp - lastTime;
-    if (difference.length() > 0) {
-      window.scrollBy({ left: difference.x, top: difference.y, behavior: "auto" });
-    }
-
+    updatePosition(difference.x, difference.y);
+    
     lastTime = event.timeStamp;
     lastPosition = new Vector2().copy(currentPosition);
 
@@ -80,12 +93,7 @@ export const useDragScroll = (element: HTMLElement) => {
     }
     
     velocity.multiplyScalar(FRICTION);
-
-    window.scrollBy({
-      left: velocity.x * MOMENTUM_TIMESTEP,
-      top: velocity.y * MOMENTUM_TIMESTEP,
-      behavior: "auto"
-    });
+    updatePosition(velocity.x * MOMENTUM_TIMESTEP, velocity.y * MOMENTUM_TIMESTEP);
 
     if (velocity.length() < MOMENTUM_REMOVE_RANGE) {
       isMomentum.value = false;
@@ -94,16 +102,15 @@ export const useDragScroll = (element: HTMLElement) => {
     }
   }
 
-  scrollRef.value.addEventListener("mousedown", startDrag);
+  document.addEventListener("mousedown", startDrag);
+  document.addEventListener("touchstart", startDrag);
 
   onUnmounted(() => {
-    if (scrollRef.value) {
-      scrollRef.value.removeEventListener("mousedown", startDrag);
-    }
-  })
+    document.removeEventListener("mousedown", startDrag);
+  });
 
   return {
-    scrollRef,
-    isDragging
+    isDragging,
+    pan: newPosition
   }
 }

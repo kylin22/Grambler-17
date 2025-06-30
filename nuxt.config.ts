@@ -1,4 +1,3 @@
-
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
@@ -10,6 +9,7 @@ export default defineNuxtConfig({
     "@nuxt-alt/auth",
     "@nuxt-alt/http",
     "@pinia/nuxt",
+    "nuxt-locomotive-scroll",
   ],
   build: {
     transpile: ['pinia-plugin-persistedstate', "three"],

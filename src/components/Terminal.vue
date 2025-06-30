@@ -1,5 +1,5 @@
 <template>
-  <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation in Nuxt! -->
+  <!-- Credit to Nikita Kryukov's website https://passwordpassword.online/ for inspiring this implementation -->
   <div id="terminal" @scroll="handleManualScroll">
     <div id="history" v-html="terminalText"></div>
     <div>
@@ -44,17 +44,6 @@
       scrolled.value = true;
     }
   }
-
-  const scrollToBottom = () => {
-    const anchor = document.getElementById("anchor");
-    if (anchor && !scrolled.value) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    }
-  }
-  
-  onUpdated(() => {
-    // scrollToBottom(); //TODO fix this shi
-  });
 
   const handleInput = async() => {
     const collector = document.getElementById('collector');
@@ -184,7 +173,7 @@
             audioManager.playSound("warn");
             break;
         }       
-        terminalText.value += `${OS_HEADER}${line.text}<br>`;
+        terminalText.value += `<span>${OS_HEADER}${line.text}</span><br>`;
         currentLine++;
         if (currentLine >= textBlock.content.length) {
           if (textBlock.collect || textBlock.prompt) {
@@ -217,6 +206,7 @@
   #terminal {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     overflow: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;

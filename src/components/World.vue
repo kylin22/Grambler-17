@@ -1,5 +1,5 @@
 <template>
-  <div id="world-container" class="vignette" :class="{ 'move-cursor': moveCursor }" @mousedown="addMoveCursor" @mouseup="removeMoveCursor">
+  <div id="world-container" ref="worldRef" class="vignette" :class="{ 'move-cursor': moveCursor }" @mousedown="addMoveCursor" @mouseup="removeMoveCursor">
     <DraggableBlock
       id="terminal"
       class='block'
@@ -18,16 +18,42 @@
   import DraggableBlock from "./DraggableBlock.vue";
   import type { DragEmit } from "../types/worldTypes";
   import Terminal from "./Terminal.vue";
+  import { useDragScroll } from "../composables/dragScroll";
 
   const draggedBlock = ref<HTMLDivElement | null>(null);
   const activeBlock = ref<HTMLDivElement | null>(null);
   const mouseOffset = ref({ x: 0, y: 0 });
   const zIndexOrder = ref<string[]>([]);
   const moveCursor = ref(false);
+  const worldRef = ref<HTMLElement | null>(null);
+  let pan = shallowRef({ x: 0, y: 0 });
+
+  onMounted(() => {
+    if (!worldRef.value) return;
+    pan = useDragScroll(worldRef.value).pan;
+
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleEndDrag);
+    zIndexOrder.value = updateWorldBlocks();
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleEndDrag);
+  });
 
   const addMoveCursor = (event: MouseEvent) => {
     if (event.button === 2) {
       moveCursor.value = true;
+    }
+
+    const target = event.target as HTMLElement;
+    if (target && target.classList.contains('window-content')) {
+      activeBlock.value = null;
+    }
+    if (activeBlock.value && !activeBlock.value.contains(event.target as Node)) {
+      activeBlock.value = null;
     }
   }
 
@@ -38,9 +64,12 @@
   const handleStartDrag = (dragged: DragEmit): void => {
     draggedBlock.value = dragged.element;
     activeBlock.value = dragged.element;
+    const blockRect = dragged.element.getBoundingClientRect();
+    const panX = pan.value.x;
+    const panY = pan.value.y;
     mouseOffset.value = {
-      x: dragged.event.clientX - dragged.element.offsetLeft,
-      y: dragged.event.clientY - dragged.element.offsetTop,
+      x: dragged.event.clientX - blockRect.left + panX,
+      y: dragged.event.clientY - blockRect.top + panY,
     };
     ZIndexMoveTop(dragged.element.id);
   }
@@ -51,17 +80,30 @@
 
   const handleMouseMove = (event: MouseEvent): void => {
     if (draggedBlock.value) {
-      let newX = event.clientX - mouseOffset.value.x;
-      let newY = event.clientY - mouseOffset.value.y;
+      const world = document.getElementById('world-container');
+      const block = draggedBlock.value;
+      const worldRect = world?.getBoundingClientRect();
+      if (!worldRect) return;
 
-      const maxLeft = (document.getElementById('world-container')?.clientWidth || 0) - draggedBlock.value.offsetWidth;
-      const maxTop = (document.getElementById('world-container')?.clientHeight || 0) - draggedBlock.value.offsetHeight;
-      
-      newX = Math.max(0, Math.min(maxLeft, newX));
-      newY = Math.max(0, Math.min(maxTop, newY));
+      // Factor in pan offset
+      const panX = pan.value.x;
+      const panY = pan.value.y;
 
-      draggedBlock.value.style.left = `${newX}px`;
-      draggedBlock.value.style.top = `${newY}px`;
+      // Mouse position relative to world container, including pan
+      let relX = event.clientX - worldRect.left - mouseOffset.value.x + panX;
+      let relY = event.clientY - worldRect.top - mouseOffset.value.y + panY;
+
+      // Clamp to world bounds
+      const minX = 0;
+      const minY = 0;
+      const maxX = worldRect.width - block.offsetWidth;
+      const maxY = worldRect.height - block.offsetHeight;
+
+      relX = Math.max(minX, Math.min(maxX, relX));
+      relY = Math.max(minY, Math.min(maxY, relY));
+
+      block.style.left = `${relX}px`;
+      block.style.top = `${relY}px`;
     }
   }
   
@@ -77,21 +119,6 @@
       zIndexOrder.value.push(id);
     }
   }
-
-  onMounted(() => {
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleEndDrag);
-    zIndexOrder.value = updateWorldBlocks();
-
-    document.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-    }, false);
-  });
-
-  onUnmounted(() => {
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleEndDrag);
-  });
 </script>
 
 <style lang="scss" scoped>
@@ -107,8 +134,10 @@
 
   #world-container {
     display: block;
-    width: 200%;
-    height: 200%;
+    left: -50vw;
+    top: -50vh;
+    width: 200vw;
+    height: 200vh;
   }
 
   .vignette {
