@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useEnergyStore = defineStore("energy", {
+export const useWillStore = defineStore("will", {
   state: () => ({ 
       amount: 0,
       capacity: 0

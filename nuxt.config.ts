@@ -9,8 +9,12 @@ export default defineNuxtConfig({
     "@nuxt-alt/auth",
     "@nuxt-alt/http",
     "@pinia/nuxt",
-    "nuxt-locomotive-scroll",
+    "vuetify-nuxt-module",
   ],
+  vuetify: {
+    moduleOptions: {},
+    vuetifyOptions: './vuetify.config.ts'
+  },
   build: {
     transpile: ['pinia-plugin-persistedstate', "three"],
   },
